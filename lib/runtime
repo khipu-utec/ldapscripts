@@ -331,6 +331,7 @@ s|<newuid>|$_NEWUID|g
 s|<udn>|$_UDN|g
 s|<newudn>|$_NEWUDN|g
 s|<gid>|$_GID|g
+s|<email>|$_EMAIL|g
 s|<home>|$_HOMEDIR|g
 s|<shell>|$USHELL|g
 s|<password>|$_PASSWORD|g

@@ -61,7 +61,26 @@ fi
 $_getldif | _filterldif | _askattrs | _utf8encode | _ldapadd
 
 [ $? -eq 0 ] || end_die "Error adding group $_GROUP to LDAP"
-end_ok "Successfully added group $_GROUP to LDAP"
+echo_log "Successfully added group $_GROUP to LDAP"
+
+
+# Create group home directory if necessary
+_GHOMEDIR=$(echo "$GHOMES" | sed "s|%gid|$_GID|g")
+
+if is_yes "$CREATEGHOMES"
+then
+  if [ -e "$_GHOMEDIR" ]
+  then
+    warn_log "Skipped home directory creation for group $_GROUP (already exists)"
+  else
+    mkdir -p "$_GHOMEDIR" 2>>"$LOGFILE" 1>/dev/null
+    chmod "$GHOMEPERMS" "$_GHOMEDIR" 2>>"$LOGFILE" 1>/dev/null
+    chown -R :"$_GID" "$_GHOMEDIR" 2>>"$LOGFILE" 1>/dev/null
+    echo_log "Successfully created home directory for group $_GROUP"
+  fi
+fi
+
+end_ok
 
 # Ldif templates #################################
 #

@@ -4,6 +4,7 @@
 
 #  Copyright (C) 2005 Ganaël LAPLANCHE - Linagora
 #  Copyright (C) 2006-2019 Ganaël LAPLANCHE
+#  Copyright (C) 2025 Khipu
 #
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
@@ -22,7 +23,7 @@
 
 if [ -z "$1" ] || [ -z "$2" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]
 then
-  echo "Usage : $0 <username> <groupname | gid> [uid]"
+  echo "Usage : $0 <username> <groupname | gid> [email] [uid]"
   exit 1
 fi
 
@@ -37,13 +38,21 @@ _USER="$1"
 _GID=$(_grouptogid "$2")
 [ -z "$_GID" ] && end_die "Cannot resolve group $2 to gid : not found"
 
+# User email
+if [ -z "$3" ] # No email provided, use default domain
+then
+  _EMAIL="${_USER}@${UDOMAIN}"
+else
+  _EMAIL="$3"
+fi
+
 # User UID
-if [ -z "$3" ] # No argument, we must find a correct UID
+if [ -z "$4" ] # No argument, we must find a correct UID
 then
   _UID=$(_findnextuid)
   [ -z "_UID" ] && end_die "Cannot guess next free user id"
 else
-  _UID="$3"
+  _UID="$4"
 fi
 
 # Compute homedir
@@ -108,10 +117,12 @@ end_ok
 ##dn: uid=<user>,<usuffix>,<suffix>
 ##objectClass: account
 ##objectClass: posixAccount
+##objectClass: inetOrgPerson
 ##cn: <user>
 ##uid: <user>
 ##uidNumber: <uid>
 ##gidNumber: <gid>
+##mail: <email>
 ##homeDirectory: <home>
 ##loginShell: <shell>
 ##gecos: <user>

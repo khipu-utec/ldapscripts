@@ -115,7 +115,7 @@ end_ok
 
 # Ldif template ##################################
 ##dn: uid=<user>,<usuffix>,<suffix>
-##objectClass: account
+##objectClass: person
 ##objectClass: posixAccount
 ##objectClass: inetOrgPerson
 ##cn: <user>
